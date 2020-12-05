@@ -71,8 +71,11 @@ function generateAccessToken(user) {
 	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
 }
 
-function authUser(req,res) {
-	return res.redirect('login');
+function authUser(req, res) {
+	bcrypt.compareSync(req.body.password, users.filter(email => req.body.email).password, (err, result) => {//todo
+		if(result == true)return res.redirect('/login');
+		res.sendStatus(401);
+	});
 }
 
 app.listen(3000, () => {
